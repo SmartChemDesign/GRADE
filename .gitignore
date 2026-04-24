@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+
+# Conda
+.conda/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Build outputs
+dist/
+frontend/dist/
+python-model/build/
+python-model/dist/
+
+# Tauri
+src-tauri/target/
+
+# Executables in root
+/*.exe
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.temp
+*.log
+bulk_new/tmp/
+
+# Large data files
+bulk_new/data/processed/
+
+# Training outputs (not needed for inference)
+bulk_new/outputs/
+
+# Old frontend (replaced by src/)
+frontend/
+
+# Temp scripts
+temp/
+
+# Old backend (replaced by python-model/sidecar)
+backend/
+
+# Old standalone scripts
+DOS_GCNN_spdf_skipatom_inference.py
+main.py
+start_backend.ps1
+start_frontend.ps1
+
+# Results
+results/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment
+.env
+.env.local
+
