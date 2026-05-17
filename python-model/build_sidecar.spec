@@ -49,29 +49,42 @@ if not dos_gcnn_path.exists():
 if not model_data_path.exists():
     raise FileNotFoundError(f"bulk_new not found: {model_data_path}")
 
-# Collect MKL and other DLLs from conda
+# Collect MKL and other DLLs from conda.
+#
+# PyTorch ships its own DLL set in torch\lib. Do not also place conda DLLs
+# with the same file names at the bundle root: Windows can resolve the root
+# copy first and then torch may fail with WinError 127 while loading shm.dll.
 dll_binaries = []
+torch_lib = torch_path / 'lib'
+torch_dll_names = set()
+if torch_lib.exists():
+    torch_dll_names = {dll.name.lower() for dll in torch_lib.glob('*.dll')}
+
 if conda_bin.exists():
     # MKL libraries
     for dll in conda_bin.glob('mkl*.dll'):
-        dll_binaries.append((str(dll), '.'))
+        if dll.name.lower() not in torch_dll_names:
+            dll_binaries.append((str(dll), '.'))
     # OpenMP
     for dll in conda_bin.glob('libiomp*.dll'):
-        dll_binaries.append((str(dll), '.'))
+        if dll.name.lower() not in torch_dll_names:
+            dll_binaries.append((str(dll), '.'))
     # Intel OpenMP
     for dll in conda_bin.glob('libomp*.dll'):
-        dll_binaries.append((str(dll), '.'))
+        if dll.name.lower() not in torch_dll_names:
+            dll_binaries.append((str(dll), '.'))
     # BLAS/LAPACK
     for dll in conda_bin.glob('lib*blas*.dll'):
-        dll_binaries.append((str(dll), '.'))
+        if dll.name.lower() not in torch_dll_names:
+            dll_binaries.append((str(dll), '.'))
     for dll in conda_bin.glob('lib*lapack*.dll'):
-        dll_binaries.append((str(dll), '.'))
+        if dll.name.lower() not in torch_dll_names:
+            dll_binaries.append((str(dll), '.'))
 
 # Explicitly bundle every DLL from torch\lib.
 # collect_all('torch') misses non-module DLLs such as libuv.dll, asmjit.dll,
 # uv.dll, which shm.dll / torch_cpu.dll import at runtime — their absence
 # surfaces as "WinError 127: specified procedure could not be found".
-torch_lib = torch_path / 'lib'
 if torch_lib.exists():
     for dll in torch_lib.glob('*.dll'):
         dll_binaries.append((str(dll), 'torch/lib'))
@@ -174,21 +187,29 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
     [],
     name='dos-gcnn-sidecar',
     debug=False,
     bootloader_ignore_signals=False,
+    exclude_binaries=True,
     strip=False,
     upx=False,  # Disable UPX - can cause issues with torch
     upx_exclude=[],
-    runtime_tmpdir=None,
     console=True,  # Console app for stdout/stderr
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=False,
+    upx_exclude=[],
+    name='dos-gcnn-sidecar',
 )

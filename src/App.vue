@@ -3,9 +3,9 @@
     <header class="header">
       <div class="logo">
         <img src="./assets/logo.png" alt="Smart Chemical Design" class="logo-image" />
-        <span class="logo-text">DOS-GCNN</span>
+        <span class="logo-text">GRADE</span>
       </div>
-      <div class="header-subtitle">Density of States Prediction</div>
+      <div class="header-subtitle">Graph-based Representation for Atomic DOS Estimation</div>
       <div class="header-actions" v-if="hasData">
         <button class="btn-export" @click="exportToZip">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -484,7 +484,7 @@ const exportToZip = async () => {
   
   // 1. Summary.csv
   const summaryData: (string | number)[][] = [
-    ['DOS-GCNN Export'],
+    ['GRADE Export'],
     [''],
     ['Number of Atoms', data.num_atoms],
     ['Elements', data.element_symbols.join('; ')],
@@ -578,6 +578,7 @@ const exportToZip = async () => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .logo-image {
@@ -614,9 +615,10 @@ const exportToZip = async () => {
 
 .header-subtitle {
   color: var(--text-secondary);
-  font-size: 0.95rem;
   font-size: 1.1rem;
   flex: 1;
+  min-width: 0;
+  line-height: 1.35;
 }
 
 .header-actions {

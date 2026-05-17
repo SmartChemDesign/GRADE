@@ -1,8 +1,8 @@
-# Full build script for DOS-GCNN Desktop Application
+# Full build script for GRADE Desktop Application
 # Builds both Python sidecar and Tauri app
 
 Write-Host "================================================" -ForegroundColor Cyan
-Write-Host "DOS-GCNN Full Build" -ForegroundColor Cyan
+Write-Host "GRADE Full Build" -ForegroundColor Cyan
 Write-Host "================================================" -ForegroundColor Cyan
 
 $ErrorActionPreference = "Stop"
@@ -13,7 +13,7 @@ Write-Host "`n[1/3] Building Python sidecar..." -ForegroundColor Yellow
 Set-Location "$projectRoot\python-model"
 
 # Check if sidecar already exists
-$sidecarPath = "dist\dos-gcnn-sidecar.exe"
+$sidecarPath = "dist\dos-gcnn-sidecar\dos-gcnn-sidecar.exe"
 if (Test-Path $sidecarPath) {
     $rebuild = Read-Host "Sidecar already exists. Rebuild? (y/N)"
     if ($rebuild -ne "y" -and $rebuild -ne "Y") {
@@ -45,5 +45,5 @@ Write-Host "`n================================================" -ForegroundColor
 Write-Host "BUILD COMPLETE!" -ForegroundColor Green
 Write-Host "================================================" -ForegroundColor Green
 Write-Host "`nOutput files:" -ForegroundColor Cyan
-Write-Host "- MSI: src-tauri\target\release\bundle\msi\DOS-GCNN_1.0.0_x64_en-US.msi" -ForegroundColor White
-Write-Host "- NSIS: src-tauri\target\release\bundle\nsis\DOS-GCNN_1.0.0_x64-setup.exe" -ForegroundColor White
+Write-Host "- MSI: src-tauri\target\release\bundle\msi\GRADE_1.1.2_x64_en-US.msi" -ForegroundColor White
+Write-Host "- NSIS: src-tauri\target\release\bundle\nsis\GRADE_1.1.2_x64-setup.exe" -ForegroundColor White
