@@ -140,6 +140,37 @@ if ($LASTEXITCODE -ne 0) {
     throw "Failed to activate '$envName' environment."
 }
 
+$expectedTorch = $null
+$torchPin = Select-String -Path $envFile -Pattern "^\s*-\s*torch==([^\s]+)\s*$" -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($torchPin) {
+    $expectedTorch = $torchPin.Matches[0].Groups[1].Value
+}
+
+if ($expectedTorch) {
+    $currentTorch = python -c "import torch; print(torch.__version__.split('+')[0])"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to import torch in '$envName' environment."
+    }
+    $currentTorch = $currentTorch.Trim()
+
+    if ($currentTorch -ne $expectedTorch) {
+        Write-Host "`nTorch version mismatch: expected $expectedTorch, found $currentTorch." -ForegroundColor Yellow
+        Write-Host "Updating conda environment '$envName' from $envFile ..." -ForegroundColor Yellow
+        & $condaExe env update -n $envName -f $envFile --prune
+        if ($LASTEXITCODE -ne 0) { throw "Failed to update conda environment '$envName'." }
+
+        conda activate $envName
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to reactivate '$envName' environment after update."
+        }
+
+        $currentTorch = python -c "import torch; print(torch.__version__.split('+')[0])"
+        if ($LASTEXITCODE -ne 0 -or $currentTorch.Trim() -ne $expectedTorch) {
+            throw "Torch version is still '$($currentTorch.Trim())', expected '$expectedTorch'."
+        }
+    }
+}
+
 # --- Ensure PyInstaller is installed -----------------------------------------
 
 Write-Host "`nChecking PyInstaller..." -ForegroundColor Yellow
@@ -162,7 +193,7 @@ Write-Host "`nRunning PyInstaller (this may take several minutes)..." -Foregroun
 pyinstaller build_sidecar.spec --clean --noconfirm
 if ($LASTEXITCODE -ne 0) { throw "PyInstaller failed." }
 
-$exePath = "dist\dos-gcnn-sidecar.exe"
+$exePath = "dist\dos-gcnn-sidecar\dos-gcnn-sidecar.exe"
 if (-not (Test-Path $exePath)) {
     throw "Output exe not found at $exePath."
 }
@@ -174,5 +205,5 @@ Write-Host "========================================" -ForegroundColor Green
 Write-Host "Output: $exePath" -ForegroundColor Cyan
 Write-Host "Size: $([math]::Round($fileSize, 2)) MB" -ForegroundColor Cyan
 Write-Host "`nNext steps:" -ForegroundColor Yellow
-Write-Host "1. Test sidecar: .\dist\dos-gcnn-sidecar.exe path\to\test.cif" -ForegroundColor White
+Write-Host "1. Test sidecar: .\dist\dos-gcnn-sidecar\dos-gcnn-sidecar.exe path\to\test.cif" -ForegroundColor White
 Write-Host "2. Build Tauri app: cd .. ; yarn tauri build" -ForegroundColor White

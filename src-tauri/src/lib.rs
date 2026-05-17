@@ -44,29 +44,26 @@ fn find_sidecar_exe(app: &tauri::AppHandle) -> Option<PathBuf> {
     
     // 1. Try resource directory (for bundled app)
     if let Ok(resource_dir) = app.path().resource_dir() {
-        let bundled_path = resource_dir.join(exe_name);
-        if bundled_path.exists() {
-            return Some(bundled_path);
-        }
-        // Also check in sidecar subdirectory
         let sidecar_path = resource_dir.join("sidecar").join(exe_name);
         if sidecar_path.exists() {
             return Some(sidecar_path);
+        }
+        let nested_sidecar_path = resource_dir.join("sidecar").join("dos-gcnn-sidecar").join(exe_name);
+        if nested_sidecar_path.exists() {
+            return Some(nested_sidecar_path);
         }
     }
     
     // 2. Try relative to exe (for portable/installed app)
     if let Ok(exe_path) = std::env::current_exe() {
         if let Some(exe_dir) = exe_path.parent() {
-            // Same directory as main exe
-            let local_path = exe_dir.join(exe_name);
-            if local_path.exists() {
-                return Some(local_path);
-            }
-            // In sidecar subdirectory
             let sidecar_path = exe_dir.join("sidecar").join(exe_name);
             if sidecar_path.exists() {
                 return Some(sidecar_path);
+            }
+            let nested_sidecar_path = exe_dir.join("sidecar").join("dos-gcnn-sidecar").join(exe_name);
+            if nested_sidecar_path.exists() {
+                return Some(nested_sidecar_path);
             }
         }
     }
@@ -74,13 +71,13 @@ fn find_sidecar_exe(app: &tauri::AppHandle) -> Option<PathBuf> {
     // 3. Try development paths
     if let Ok(cwd) = std::env::current_dir() {
         // From project root - PyInstaller output
-        let dev_path = cwd.join("python-model").join("dist").join(exe_name);
+        let dev_path = cwd.join("python-model").join("dist").join("dos-gcnn-sidecar").join(exe_name);
         if dev_path.exists() {
             return Some(dev_path);
         }
         // From src-tauri
         if let Some(parent) = cwd.parent() {
-            let parent_path = parent.join("python-model").join("dist").join(exe_name);
+            let parent_path = parent.join("python-model").join("dist").join("dos-gcnn-sidecar").join(exe_name);
             if parent_path.exists() {
                 return Some(parent_path);
             }
