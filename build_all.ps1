@@ -46,4 +46,3 @@ Write-Host "BUILD COMPLETE!" -ForegroundColor Green
 Write-Host "================================================" -ForegroundColor Green
 Write-Host "`nOutput files:" -ForegroundColor Cyan
 Write-Host "- MSI: src-tauri\target\release\bundle\msi\GRADE_1.1.2_x64_en-US.msi" -ForegroundColor White
-Write-Host "- NSIS: src-tauri\target\release\bundle\nsis\GRADE_1.1.2_x64-setup.exe" -ForegroundColor White

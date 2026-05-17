@@ -98,6 +98,11 @@ torch_datas, torch_binaries, torch_hiddenimports = collect_all('torch')
 
 all_datas = scipy_datas + numpy_datas + torch_datas
 all_binaries = scipy_binaries + numpy_binaries + torch_binaries + dll_binaries
+all_binaries = [
+    binary
+    for binary in all_binaries
+    if not str(binary[0]).lower().endswith('.lib')
+]
 all_hiddenimports = scipy_hiddenimports + numpy_hiddenimports + torch_hiddenimports
 
 a = Analysis(
