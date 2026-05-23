@@ -1,4 +1,4 @@
-# DOS-GCNN
+# GRADE - Graph-based Representation for Atomic DOS Estimation
 
 Desktop application for predicting the electronic Density of States (DOS) of crystalline materials using a graph convolutional neural network.
 
