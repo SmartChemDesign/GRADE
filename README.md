@@ -39,8 +39,8 @@ To build from source:
 
 ## Running the prebuilt application
 
-1. Download `DOS-GCNN_<version>_x64_en-US.msi` or `DOS-GCNN_<version>_x64-setup.exe` from the Releases page.
-2. Run the installer and launch **DOS-GCNN** from the Start menu.
+1. Download `GRADE_1.2.1_x64_en-US.msi` from the Releases page.
+2. Run the installer and launch **GRADE** from the Start menu.
 3. Click **Select File**, pick a `.cif` structure, and the DOS will be predicted and rendered.
 
 ## Building and running from source
@@ -57,8 +57,7 @@ Builds the Python sidecar and the Tauri application end-to-end. If Miniconda is 
 
 Artifacts:
 
-- `src-tauri\target\release\bundle\msi\DOS-GCNN_<version>_x64_en-US.msi`
-- `src-tauri\target\release\bundle\nsis\DOS-GCNN_<version>_x64-setup.exe`
+- `src-tauri\target\release\bundle\msi\GRADE_1.2.1_x64_en-US.msi`
 
 ### Option 2 — development run
 

@@ -1,6 +1,6 @@
 [package]
 name = "dos-gcnn-tauri"
-version = "1.1.2"
+version = "1.2.1"
 description = "GRADE Desktop Application"
 authors = ["SCD Lab"]
 edition = "2021"
