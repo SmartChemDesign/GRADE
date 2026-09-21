@@ -39,7 +39,7 @@ To build from source:
 
 ## Running the prebuilt application
 
-1. Download `GRADE_1.2.1_x64_en-US.msi` from the Releases page.
+1. Download `GRADE_1.2.2_x64_en-US.msi` from the Releases page.
 2. Run the installer and launch **GRADE** from the Start menu.
 3. Click **Select File**, pick a `.cif` structure, and the DOS will be predicted and rendered.
 
@@ -57,7 +57,7 @@ Builds the Python sidecar and the Tauri application end-to-end. If Miniconda is 
 
 Artifacts:
 
-- `src-tauri\target\release\bundle\msi\GRADE_1.2.1_x64_en-US.msi`
+- `src-tauri\target\release\bundle\msi\GRADE_1.2.2_x64_en-US.msi`
 
 ### Option 2 — development run
 

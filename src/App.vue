@@ -26,7 +26,6 @@
 
       <!-- Main Visualization -->
       <div v-else class="visualization-container fade-in">
-        <ADPanel :ad="dosResult?.ad ?? null" />
         <div class="visualization-panels">
         <div class="panel crystal-panel">
           <div class="panel-header">
@@ -128,6 +127,7 @@
           </div>
         </div>
         </div>
+        <ADPanel :ad="dosResult?.ad ?? null" />
       </div>
     </main>
 
