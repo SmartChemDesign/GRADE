@@ -39,6 +39,7 @@ print(result.dos_d.shape)          # (n_atoms, 400) — d orbitals
 print(result.dos_f.shape)          # (n_atoms, 400) — f orbitals
 print(result.total_crystal_dos)    # Full crystal DOS
 print(result.energy_grid)          # Energy grid (-10 to 10 eV)
+print(result.ad)                   # Applicability-domain payload or None
 ```
 
 #### With plots

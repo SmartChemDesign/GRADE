@@ -400,11 +400,13 @@ class DOSpredict(torch.nn.Module):
 
         out = F.dropout(out, p=self.dropout_rate, training=self.training)
 
+        # Post-encoder embeddings used by Transformer AD (before s/p/d/f decoders)
+        embeds = out
+
         # Decoders
         if not self.basis_expansion:
-            return self._forward_grid(out)
-        else:
-            return self._forward_basis(out)
+            return (*self._forward_grid(out), embeds)
+        return (*self._forward_basis(out), embeds)
 
     def _forward_grid(self, out):
         """Forward pass for grid-based prediction."""

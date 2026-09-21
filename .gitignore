@@ -38,6 +38,9 @@ src-tauri/target/
 .DS_Store
 Thumbs.db
 
+# Linked git worktrees
+.worktrees/
+
 # Temp files
 *.tmp
 *.temp

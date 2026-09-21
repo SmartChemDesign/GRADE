@@ -18,3 +18,4 @@ dependencies:
     - uvicorn>=0.24.0
     - python-multipart>=0.0.6
     - pymatgen>=2024.1.0
+    - scikit-learn==1.7.2

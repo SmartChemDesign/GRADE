@@ -26,6 +26,8 @@
 
       <!-- Main Visualization -->
       <div v-else class="visualization-container fade-in">
+        <ADPanel :ad="dosResult?.ad ?? null" />
+        <div class="visualization-panels">
         <div class="panel crystal-panel">
           <div class="panel-header">
             <h2>Crystal Structure</h2>
@@ -125,6 +127,7 @@
             </div>
           </div>
         </div>
+        </div>
       </div>
     </main>
 
@@ -181,6 +184,8 @@ import JSZip from 'jszip'
 import FileUpload from './components/FileUpload.vue'
 import CrystalViewer from './components/CrystalViewer.vue'
 import DOSChart from './components/DOSChart.vue'
+import ADPanel from './components/ADPanel.vue'
+import { adExportRows, adSummaryRows, type AdResult } from './ad'
 
 interface PredictionData {
   num_atoms: number
@@ -194,6 +199,8 @@ interface PredictionData {
   total_atomic_dos: number[][]
   total_crystal_dos: number[]
   cif_content: string
+  ad?: AdResult | null
+  ad_reason?: string | null
 }
 
 interface SidecarResult {
@@ -494,9 +501,11 @@ const exportToZip = async () => {
     [''],
     ['Atom List:'],
     ['Index', 'Element'],
-    ...data.element_symbols.map((sym, idx) => [idx, sym])
+    ...data.element_symbols.map((sym, idx) => [idx, sym]),
+    ...adSummaryRows(data.ad),
   ]
   zip.file('Summary.csv', arrayToCSV(summaryData))
+  zip.file('Applicability_Domain.csv', arrayToCSV(adExportRows(data.ad)))
   
   // 2. Crystal_Total.csv
   const crystalData: (string | number)[][] = [
@@ -665,10 +674,19 @@ const exportToZip = async () => {
 }
 
 .visualization-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: calc(100vh - 150px);
+  min-height: 0;
+}
+
+.visualization-panels {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-  height: calc(100vh - 150px);
+  flex: 1;
+  min-height: 0;
 }
 
 .panel {

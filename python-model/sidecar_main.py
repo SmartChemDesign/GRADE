@@ -22,7 +22,9 @@ Output:
             "dos_f": [[...], ...],
             "total_atomic_dos": [[...], ...],
             "total_crystal_dos": [...],
-            "cif_content": "..."
+            "cif_content": "...",
+            "ad": { ... } | null,
+            "ad_reason": "..." | null
         }
     }
     
@@ -156,6 +158,8 @@ def main():
                 "total_atomic_dos": result.total_atomic_dos.tolist(),
                 "total_crystal_dos": result.total_crystal_dos[0].tolist(),
                 "cif_content": cif_content_clean,
+                "ad": result.ad,
+                "ad_reason": result.ad_reason,
             }
         }
         

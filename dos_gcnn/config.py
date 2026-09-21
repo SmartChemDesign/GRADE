@@ -32,13 +32,13 @@ class Config:
     bulk_dir: Path = field(default_factory=lambda: BASE_DIR / "bulk_new")
     
     # Model settings
-    model_name: str = "model_bulk_lorentz_28_spdf_terms_new.pth"
+    model_name: str = "model_bulk_lorentz_28_spdf_tansformer_terms_new.pth"
     graph_conv_type: str = "Transformer"
     basis_expansion: bool = True
     basis_type: str = "Lorentz"
     num_func: int = 28
     perceptron_type: str = "Regular"
-    gc_count: int = 5
+    gc_count: int = 3
     
     # Processing settings
     dictionary_source: str = "default"
@@ -53,6 +53,11 @@ class Config:
     # Output settings
     write_output: bool = False
     output_dir: Optional[Path] = None
+
+    # Applicability-domain settings (post-encoder 370-D Transformer embeddings)
+    ad_model_path: Optional[Path] = None
+    ad_threshold: float = 0.50
+    ad_activity_policy: str = "element_block"
     
     def __post_init__(self):
         """Initialize derived paths."""
@@ -61,6 +66,10 @@ class Config:
         self.dict_file = self.bulk_dir / "dict" / "dictionary_default.json"
         self.skipatom_file = self.bulk_dir / "dict" / "terms.json"
         self.tmp_dir = self.bulk_dir / "tmp"
+        if self.ad_model_path is None:
+            self.ad_model_path = self.bulk_dir / "ad" / "ad_model.pkl"
+        else:
+            self.ad_model_path = Path(self.ad_model_path)
         
         if self.output_dir is None:
             self.output_dir = self.bulk_dir / "outputs"
@@ -93,6 +102,9 @@ class Config:
             "model_path": str(self.model_path),
             "write_output": self.write_output,
             "job_name": "bulk_dos",
+            "ad_model_path": str(self.ad_model_path),
+            "ad_threshold": float(self.ad_threshold),
+            "ad_activity_policy": self.ad_activity_policy,
         }
     
     def get_model_config(self) -> dict:
@@ -104,6 +116,7 @@ class Config:
             "num_func": self.num_func,
             "perceptron_type": self.perceptron_type,
             "gc_count": self.gc_count,
+            "dropout_rate": 0.1,
             # KAN parameters
             "grid_size": 3,
             "spline_order": 2,

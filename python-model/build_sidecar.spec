@@ -95,15 +95,25 @@ print(f"Found {len(dll_binaries)} DLLs to include")
 scipy_datas, scipy_binaries, scipy_hiddenimports = collect_all('scipy')
 numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
 torch_datas, torch_binaries, torch_hiddenimports = collect_all('torch')
+sklearn_datas, sklearn_binaries, sklearn_hiddenimports = collect_all('sklearn')
 
-all_datas = scipy_datas + numpy_datas + torch_datas
-all_binaries = scipy_binaries + numpy_binaries + torch_binaries + dll_binaries
+all_datas = scipy_datas + numpy_datas + torch_datas + sklearn_datas
+all_binaries = scipy_binaries + numpy_binaries + torch_binaries + sklearn_binaries + dll_binaries
 all_binaries = [
     binary
     for binary in all_binaries
     if not str(binary[0]).lower().endswith('.lib')
 ]
-all_hiddenimports = scipy_hiddenimports + numpy_hiddenimports + torch_hiddenimports
+all_hiddenimports = (
+    scipy_hiddenimports + numpy_hiddenimports + torch_hiddenimports + sklearn_hiddenimports
+)
+
+transformer_pth = model_data_path / 'saved_models' / 'model_bulk_lorentz_28_spdf_tansformer_terms_new.pth'
+ad_pkl = model_data_path / 'ad' / 'ad_model.pkl'
+if not transformer_pth.exists():
+    raise FileNotFoundError(f"Transformer checkpoint not found: {transformer_pth}")
+if not ad_pkl.exists():
+    raise FileNotFoundError(f"AD bundle pickle not found: {ad_pkl}")
 
 a = Analysis(
     ['sidecar_main.py'],
@@ -113,8 +123,8 @@ a = Analysis(
         # Include dos_gcnn module
         (str(dos_gcnn_path), 'dos_gcnn'),
         # Include model weights
-        (str(model_data_path / 'saved_models' / 'model_bulk_lorentz_28_spdf_terms_new.pth'), 
-         'bulk_new/saved_models'),
+        (str(transformer_pth), 'bulk_new/saved_models'),
+        (str(ad_pkl), 'bulk_new/ad'),
         # Include dictionaries
         (str(model_data_path / 'dict' / 'dictionary_default.json'), 'bulk_new/dict'),
         (str(model_data_path / 'dict' / 'terms.json'), 'bulk_new/dict'),
@@ -167,6 +177,12 @@ a = Analysis(
         'dos_gcnn.data.processing',
         'dos_gcnn.utils',
         'dos_gcnn.utils.data',
+        'dos_gcnn.ad',
+        'sklearn',
+        'sklearn.neighbors',
+        'sklearn.decomposition',
+        'sklearn.preprocessing',
+        'sklearn.isotonic',
     ] + all_hiddenimports,
     hookspath=[],
     hooksconfig={},

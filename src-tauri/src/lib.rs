@@ -18,6 +18,25 @@ pub struct SidecarResult {
     pub cif_content: Option<String>,
 }
 
+/// Applicability-domain scores for one crystal
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AdResult {
+    pub inside_ad: bool,
+    pub ad_threshold: f64,
+    pub p_ensemble_all: f64,
+    pub p_ensemble_s: f64,
+    pub p_ensemble_p: f64,
+    pub p_ensemble_d: f64,
+    pub p_ensemble_f: f64,
+    pub raw_knn: f64,
+    pub raw_kde: f64,
+    pub raw_lof: f64,
+    pub active_d: bool,
+    pub active_f: bool,
+    pub contains_f_element: bool,
+    pub f_element_warning: bool,
+}
+
 /// Prediction data from the model
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PredictionData {
@@ -32,6 +51,10 @@ pub struct PredictionData {
     pub total_atomic_dos: Vec<Vec<f64>>,
     pub total_crystal_dos: Vec<f64>,
     pub cif_content: String,
+    #[serde(default)]
+    pub ad: Option<AdResult>,
+    #[serde(default)]
+    pub ad_reason: Option<String>,
 }
 
 /// Find sidecar executable

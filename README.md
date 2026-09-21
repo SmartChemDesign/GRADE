@@ -7,7 +7,12 @@ The app loads a crystal structure (CIF / VASP / POSCAR), runs an ML inference pi
 - a 3D interactive crystal viewer (3Dmol.js);
 - per-atom and per-orbital (s / p / d / f) DOS plots (Plotly);
 - total crystal DOS and selective atom-based aggregations;
-- CSV / ZIP export of the computed DOS.
+- CSV / ZIP export of the computed DOS;
+- Applicability Domain (AD) for the Transformer checkpoint: INSIDE if `p_ensemble_all >= 0.50`.
+
+AD is scored on 370-D post-encoder embeddings (Linear 205→370, 3 TransformerConv, 3 GC_block), never on raw `data.x`. Inactive d/f channels use the structure-only `element_block` policy. f-block structures surface a caution on the f-channel. A missing `bulk_new/ad/ad_model.pkl` skips AD without blocking DOS. A dimension mismatch fails the prediction.
+
+The calibrated `ad_model.pkl` was produced with scikit-learn 1.9.0. GRADE stays on Python 3.10, so the sidecar uses scikit-learn 1.7.2 (the last 3.10 wheel). Loading emits an `InconsistentVersionWarning`; the bundle still unpickles.
 
 ## Architecture
 
@@ -109,16 +114,18 @@ Re-running the script after the first install is fast — it skips any step that
 ```
 .
 ├── src/                      # Vue 3 + TypeScript frontend
-│   ├── App.vue               # Main app, DOS aggregation, export
+│   ├── App.vue               # Main app, DOS aggregation, AD, export
+│   ├── ad.ts                 # AD payload types and ZIP rows
 │   └── components/
+│       ├── ADPanel.vue       # Applicability-domain strip
 │       ├── CrystalViewer.vue # 3Dmol.js viewer with coordination polyhedra
 │       ├── DOSChart.vue      # Plotly DOS chart
 │       └── FileUpload.vue    # File picker
 ├── src-tauri/                # Tauri / Rust backend (calls the sidecar)
 ├── python-model/             # Sidecar entry point + PyInstaller spec
 │   └── build_sidecar.ps1     # Builds dos-gcnn-sidecar.exe
-├── dos_gcnn/                 # ML package (model, data, inference)
-├── bulk_new/                 # Pretrained weights, config, vocabularies
+├── dos_gcnn/                 # ML package (model, data, inference, AD runtime)
+├── bulk_new/                 # Pretrained weights, AD pickle, config, vocabularies
 ├── environment.yml           # Conda environment spec
 ├── build_all.ps1             # Sidecar + Tauri end-to-end build
 ├── build_tauri.ps1           # Tauri-only build

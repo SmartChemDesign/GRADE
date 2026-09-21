@@ -1,0 +1,51 @@
+{
+  "best_knn_k": 5,
+  "best_kde_bandwidth": 0.2,
+  "best_lof_neighbors": 40,
+  "pca_dim": 32,
+  "kde_dims": 8,
+  "atom_novelty_quantile": 0.9,
+  "active_threshold": 1e-10,
+  "mass_penalty": 0.25,
+  "atom_error_aggregation": "mean",
+  "tau_quantile": 0.5,
+  "max_train_rows": 50000,
+  "max_rows_per_object": 256,
+  "max_kde_rows": 15000,
+  "max_lof_rows": 20000,
+  "random_state": 42,
+  "taus": {
+    "s": 0.019227104485450452,
+    "p": 0.013668462928490204,
+    "d": 0.013618799212933684,
+    "f": 0.008423489753030665
+  },
+  "ensemble_weights": {
+    "s": {
+      "knn": 0.336239928298307,
+      "kde": 0.32657770942347447,
+      "lof": 0.3371823622782186
+    },
+    "p": {
+      "knn": 0.34209660375809336,
+      "kde": 0.3247833380899033,
+      "lof": 0.33312005815200335
+    },
+    "d": {
+      "knn": 0.3359396794640838,
+      "kde": 0.33510770013730623,
+      "lof": 0.32895262039861
+    },
+    "f": {
+      "knn": 0.33485501796794653,
+      "kde": 0.3350362358610686,
+      "lof": 0.3301087461709848
+    },
+    "all": {
+      "knn": 0.3501620996745001,
+      "kde": 0.3299833608728474,
+      "lof": 0.3198545394526525
+    }
+  },
+  "sparse_channel_rule": "d/f zero targets are treated as deterministic-correct and excluded from active-case AD calibration"
+}
